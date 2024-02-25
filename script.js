@@ -39,6 +39,8 @@ function addBookToLibrary() {
     myLibrary.push(newBookObject);
 }
 
+let libraryTable = document.querySelector('table');
+
 function displayBooks() {
     for (const book of myLibrary) {
         console.log(book.info());
