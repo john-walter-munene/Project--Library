@@ -13,7 +13,7 @@
         <div class="header">
             <h1>A Simple Library</h1>
             <p>Written by John Walter</p>
-            <button>Add a book</button>
+            <button class="add">Add a book</button>
         </div>
 
         <table>
@@ -29,45 +29,50 @@
                     <th>&nbsp;</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr>
-                    <td>The Hobbit</td>
-                    <td>J.R.R. Tolkien</td>
-                    <td>295</td>
-                    <td>Read</td>
-                    <td><button class="change">Toggle status</button></td>
-                    <td><button class="edit">Edit</button></td>
-                    <td><button class="delete">Delete</button></td>
-                </tr>
-                <tr>
-                    <td>The Hobbit</td>
-                    <td>J.R.R. Tolkien</td>
-                    <td>295</td>
-                    <td>Not read</td>
-                    <td><button class="change">Toggle status</button></td>
-                    <td><button class="edit">Edit</button></td>
-                    <td><button class="delete">Delete</button></td>
-                </tr>
-                <tr>
-                    <td>The Hobbit</td>
-                    <td>J.R.R. Tolkien</td>
-                    <td>295</td>
-                    <td>Read</td>
-                    <td><button class="change">Toggle status</button></td>
-                    <td><button class="edit">Edit</button></td>
-                    <td><button class="delete">Delete</button></td>
-                </tr>
-                <tr>
-                    <td>The Hobbit</td>
-                    <td>J.R.R. Tolkien</td>
-                    <td>295</td>
-                    <td>Not read</td>
-                    <td><button class="change">Toggle status</button></td>
-                    <td><button class="edit">Edit</button></td>
-                    <td><button class="delete">Delete</button></td>
-                </tr>
+            <tbody class="books">
+
             </tbody>
         </table>
+        <dialog id="dialog">
+            <form action="#">
+                <h1>Adding a new book</h1>
+                
+                <div class="title">
+                    <label for="title" value="book_title">Title: </label>
+                    <input autofocus type="text" id="title" name="title" placeholder="My Observations" required>
+                </div>
+    
+                <div class="author">
+                    <label for="author" value="book_author">Author: </label>
+                    <input type="text" id="author" name="author" required placeholder="John Walter">
+                </div>
+    
+                <div class="pages">
+                    <label for="pages" value="book_pages">Pages: </label>
+                    <input type="number" id="pages" name="pages" required placeholder="100">
+                </div>
+
+                <div class="book-status">
+                    <p>Read book?</p>
+                </div>
+                
+                <div class="radios">
+                    <div>
+                        <input type="radio" id="yes" name="read_status" value="Read" checked>
+                        <label for="yes">Yes</label>
+                    </div>
+                    <div>
+                        <input type="radio" id="no" name="read_status" value="Not Read">
+                        <label for="no">No</label>
+                    </div>
+                </div>
+                
+                <div>
+                    <button class="submit" type="submit" formmethod="dialog">Submit</button>
+                    <button class="return" value="default" formmethod="dialog">Return</button>
+                </div>
+            </form>
+        </dialog>
     </div>
 </body>
 </html>
