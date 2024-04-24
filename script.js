@@ -1,77 +1,32 @@
-const myLibrary = [
-    {
-        title: "Rich dad poor dad",
-        author: "Robert Kiyosaki",
-        pages: 1000,
-        readOrNot: "Read",
-        info: function() {
-            return `${this.title} by ${this.author}, ${this.pages}, ${this.readOrNot}`;
-        },
-    },
-    {
-        title: "Rich dad poor dad",
-        author: "Robert Kiyosaki",
-        pages: 1500,
-        readOrNot: "Not read",
-        info: function() {
-            return `${this.title} by ${this.author}, ${this.pages}, ${this.readOrNot}`;
-        },
+const myLibrary = [];
+
+class Book {
+    constructor(title, author, pages, readOrNot) {
+        this.title = title;
+        this.author = author;
+        this.pages = pages;
+        this.readOrNot = readOrNot;
     }
-];
 
-function Book(title, author, pages, readOrNot) {
-    this.title = title;
-    this.author = author;
-    this.pages = pages;
-    this.readOrNot = readOrNot;
-
-    this.info = function() {
+    info() {
         return `${this.title} by ${this.author}, ${this.pages}, ${this.readOrNot}`;
-    };
-}
-
-function addBookToLibrary(editIndex = null) {
-    // Get user inputs from form.
-    let title = document.querySelector('#title').value;
-    let author = document.querySelector('#author').value;
-    let pages = document.querySelector('#pages').value;
-    let readStatus = document.querySelector('input[name="read_status"]:checked').getAttribute('value');
-    // If editing, update the existing book object.
-    if (editIndex !== null) {
-        myLibrary[editIndex].title = title;
-        myLibrary[editIndex].author = author;
-        myLibrary[editIndex].pages = pages;
-        myLibrary[editIndex].readOrNot = readStatus;
-    } else {
-        // If adding a new book, create a new Book object and push it to the library.
-        let newBookObject = new Book(title, author, pages, readStatus);
-        myLibrary.push(newBookObject);
     }
-
-    // Clear form.
-    document.querySelector('#title').value = "";
-    document.querySelector('#author').value = "";
-    document.querySelector('#pages').value = "";
-    document.querySelector('input[name="read_status"]:checked').checked = false;
-
-    // Update the display after adding/editing a book.
-    libraryTable.textContent = "";
-    displayBooks();
-
-    return;
 }
 
 let libraryTable = document.querySelector('.books');
 
 function displayBooks() {
-    for (const book of myLibrary) {
-        //Create a new table row for each book
+    // Clear UI before populating with current library status.
+    libraryTable.textContent = "";
+    for (let counter = 0; counter < myLibrary.length; counter++) {
+        // Access current book
+        let book = myLibrary[counter];
+
+        // Create a new table row for each book
+        // Add a data attribute to each item, needed for edits
         let bookRow = document.createElement('tr');
-        
-        // Add a data attribute that corresponds to each item index.
-        let bookIndex = myLibrary.indexOf(book);
-        bookRow.setAttribute('data-book-number', bookIndex);
-        
+        bookRow.setAttribute('data-book-number', counter);
+
         // Create content holders in each row.
         let bookTitle = document.createElement('td');
         let bookAuthor = document.createElement('td');
@@ -86,7 +41,7 @@ function displayBooks() {
         let editButton = document.createElement('button');
         let deleteButton = document.createElement('button');
 
-        // Add css attributes to buttons and bookstatus
+        // Add CSS attributes to buttons and book status
         toggleButton.setAttribute('class', 'toggle');
         editButton.setAttribute('class', 'edit');
         deleteButton.setAttribute('class', 'delete');
@@ -106,98 +61,143 @@ function displayBooks() {
         editButtonSlot.appendChild(editButton);
         deleteButtonSlot.appendChild(deleteButton);
 
-        // Store book content in an array
-        // Add them to book row, and add book row to shelf
+        // Store book content in array
+        // Add book in row, add row in table
         let bookContent = [bookTitle, bookAuthor, bookPages, bookStatus, toggleButtonSlot, editButtonSlot, deleteButtonSlot];
         bookContent.forEach(contentPiece => bookRow.appendChild(contentPiece));
         libraryTable.appendChild(bookRow);
 
-        // Add event listener to buttons.
+        // Adds event listeners to buttons
         toggleButton.addEventListener('click', () => toggleStatus(toggleButton));
         deleteButton.addEventListener('click', () => deleteBook(deleteButton));
         editButton.addEventListener('click', () => editYourBook(editButton));
     }
+
     return;
 }
 
+// Create dummy books, and add them to library hence visualize UI.
+let bookOne = new Book('Rich dad poor dad', 'Robert Kiyosaki', 1000, 'Read');
+let bookTwo = new Book('The Startup Way', 'Eric Ries', 390, 'Not Read');
+myLibrary.push(bookOne, bookTwo);
 displayBooks();
 
-let addNewBook = document.querySelector('.add');
-let dialogElement = document.querySelector('#dialog');
-addNewBook.addEventListener('click', () => {
-    dialogElement.showModal();
-})
-console.log(myLibrary);
+function addBookToLibrary() {
+    // Get form inputs
+    let title = document.querySelector('#title').value;
+    let author = document.querySelector('#author').value;
+    let pages = document.querySelector('#pages').value;
+    let readStatus = document.querySelector('input[name="read_status"]:checked').getAttribute('value');
 
-// Close form and return to library
+    // Check if any of the required fields are empty
+    if (!title || !author || !pages) addBookToLibrary();
+
+    // Decide whether to edit or add new book in library
+    let index = dialogElement.getAttribute('data-book-number');
+    if (index !== null) {
+        updateBook(index, title, author, pages, readStatus);
+    } else {
+        let newBookObject = new Book(title, author, pages, readStatus);
+        myLibrary.push(newBookObject);
+    }
+
+    clearForm();
+    displayBooks();
+    return;
+}
+
+function updateBook(index, title, author, pages, readStatus) {
+    // Get book to update
+    let bookToUpdate = myLibrary[index];
+
+    // Update book
+    bookToUpdate.title = title;
+    bookToUpdate.author = author;
+    bookToUpdate.pages = pages;
+    bookToUpdate.readOrNot = readStatus;
+
+    return;
+}
+
+function clearForm() {
+    // Reset all form input fields
+    document.querySelector('#title').value = "";
+    document.querySelector('#author').value = "";
+    document.querySelector('#pages').value = "";
+    document.querySelector('input[name="read_status"]:checked').checked = false;
+    return;
+}
+
+let dialogElement = document.querySelector('#dialog');
+
+let addNewBookButton = document.querySelector('.add');
+addNewBookButton.addEventListener('click', () => {
+    dialogElement.showModal();
+});
+
 let formCloseButton = document.querySelector('.return');
 formCloseButton.addEventListener('click', (event) => {
+    clearForm();
     event.preventDefault();
     dialogElement.close();
-})
+});
 
 let submitButton = document.querySelector('.submit');
 submitButton.addEventListener('click', (event) => {
-    let index = dialogElement.getAttribute('data-book-number'); // Get the index from the dialog element
-    addBookToLibrary(index);
+    addBookToLibrary();
     event.preventDefault();
     dialogElement.close();
-    libraryTable.textContent = "";
-    displayBooks();
 });
 
 function toggleStatus(toggleButton) {
-    // Find parent row of clicked button
+    // Access book position, and current status
+    // Toggle status
     const bookRow = toggleButton.parentElement.parentElement;
-    // Find the cell containing book status.
     const bookStatusCell = bookRow.querySelector('.book-status');
-    // Toggle the status.
     bookStatusCell.textContent = bookStatusCell.textContent === "Read" ? "Not read" : "Read";
+    return;
 }
 
 function deleteBook(deleteButton) {
+    // Delete selected book.
     const bookRow = deleteButton.parentElement.parentElement;
-    // delete book in array.
     myLibrary.splice(bookRow.getAttribute('data-book-number'), 1);
-    libraryTable.textContent = "";
     displayBooks();
+    return;
 }
 
 function editYourBook(editButton) {
     let bookRow = editButton.parentElement.parentElement;
     let index = bookRow.getAttribute('data-book-number');
-    dialogElement.setAttribute('data-book-number', index); // Set the data-book-number attribute
+    
+    dialogElement.setAttribute('data-book-number', index);
     autofillForm(editButton);
     dialogElement.showModal();
 
-    // Update the event listener for the submit button to handle editing.
     submitButton.removeEventListener('click', addBookToLibrary);
-    submitButton.addEventListener('click', (event) => {
-        addBookToLibrary(index); // Pass the index to addBookToLibrary()
-        event.preventDefault();
+    submitButton.addEventListener('click', () => {
+        addBookToLibrary();
         dialogElement.close();
     });
+    return;
 }
 
-function autofillForm (editButton) {
+function autofillForm(editButton) {
+    // Get book row, index and status
     let bookRow = editButton.parentElement.parentElement;
     let index = bookRow.getAttribute('data-book-number');
-
     let bookReadStatus = myLibrary[index].readOrNot;
 
-    if (bookReadStatus === "Read") {
-        document.querySelector('#yes').checked = true;
-    } else {
-        document.querySelector('#no').checked = true;
-    }
-
+    // Get form fields
     let title = document.querySelector('#title');
     let author = document.querySelector('#author');
     let pages = document.querySelector('#pages');
-    let readStatus = document.querySelector('input[name="read_status"]:checked');
 
+    // Autofill form fields
     title.value = myLibrary[index].title;
     author.value = myLibrary[index].author;
     pages.value = myLibrary[index].pages;
-    readStatus.value = bookReadStatus;
+    document.querySelector('#yes').checked = bookReadStatus === "Read" ? true : false;
+    document.querySelector('#no').checked = bookReadStatus === "Not Read" ? true : false;
+    return;
 }

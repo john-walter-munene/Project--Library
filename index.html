@@ -39,17 +39,17 @@
                 
                 <div class="title">
                     <label for="title" value="book_title">Title: </label>
-                    <input autofocus type="text" id="title" name="title" placeholder="My Observations" required>
+                    <input autofocus type="text" id="title" name="title" placeholder="My Observations" min="10" required>
                 </div>
     
                 <div class="author">
                     <label for="author" value="book_author">Author: </label>
-                    <input type="text" id="author" name="author" required placeholder="John Walter">
+                    <input type="text" id="author" name="author" required placeholder="John Walter" minlength="4" required>
                 </div>
     
                 <div class="pages">
                     <label for="pages" value="book_pages">Pages: </label>
-                    <input type="number" id="pages" name="pages" required placeholder="100">
+                    <input type="number" id="pages" name="pages" required placeholder="100" min="20" required>
                 </div>
 
                 <div class="book-status">
